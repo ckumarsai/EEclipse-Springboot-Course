@@ -1,0 +1,80 @@
+package com.nt.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.nt.entity.Item;
+
+import com.nt.exception.ItemNotFoundException;
+
+import com.nt.repository.IitemRepo;
+
+@Service("itemService")
+public class ItemMgmtServiceImpl implements IItemMgmtService {
+
+	@Autowired
+	private IitemRepo itemRepo;
+
+	@Override
+	public String registerItem(Item tourist) {
+		int idVal = itemRepo.save(tourist).getItemId();
+		return "Item is registered having id value::" + idVal;
+	}
+
+	@Override
+	public List<Item> fetchAllItems() {
+		List<Item> list = itemRepo.findAll();
+		list.sort((t1, t2) -> t1.getItemId().compareTo(t2.getItemId()));
+		return list;
+	}
+
+	@Override
+	public Item fetchItemById(Integer tid) throws ItemNotFoundException {
+		return itemRepo.findById(tid)
+				.orElseThrow(() -> new ItemNotFoundException(tid + ": tourist is not found"));
+	}
+
+	
+
+	@Override
+	public String updateItemDetails(Item item) throws ItemNotFoundException {
+		Optional<Item> optional = itemRepo.findById(item.getItemId());
+		if (optional.isPresent()) {
+			itemRepo.save(item);// save(-)performs either save obj or update obj creation
+			return item.getItemId() + "Item is updated";
+		} else {
+			throw new ItemNotFoundException(item.getItemId() + " Item is not found");
+		}
+	}
+
+
+	@Override
+	public String removeItemById(int id) throws ItemNotFoundException {
+		Optional<Item> optional = itemRepo.findById(id);
+		if (optional.isPresent()) {
+			// use Repo
+			itemRepo.deleteById(id);
+			return id + ":tid Item found and deleted";
+		} else {
+			throw new ItemNotFoundException(id + ":tid  Item is not found for deletion");
+		}
+	}
+
+	@Override
+	public String updateItemDetailsById(int id) throws ItemNotFoundException {
+		Optional<Item> optional=itemRepo.findById(id);
+		if(optional.isPresent()) {
+			itemRepo.save();
+			return id + ": tid is found and updated";
+		}else {
+			throw new ItemNotFoundException(id + ":tid  Item is not found for updation");
+		}
+		
+	}
+
+	
+
+}

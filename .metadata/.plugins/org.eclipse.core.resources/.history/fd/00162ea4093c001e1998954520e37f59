@@ -1,0 +1,18 @@
+package com.nt.entity;
+
+//import org.hibernate.annotations.Table;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.Data;
+
+@Entity
+@Table(name="Jpa_Doc_Info")
+@Data
+public class Doctor {
+	private int docId;
+	private String docName;
+	private String specialization;
+	private Double income;
+
+}

@@ -1,0 +1,9 @@
+package com.nt.entity;
+
+public class Doctor {
+	private int docId;
+	private String docName;
+	private String specialization;
+	private Double income;
+
+}

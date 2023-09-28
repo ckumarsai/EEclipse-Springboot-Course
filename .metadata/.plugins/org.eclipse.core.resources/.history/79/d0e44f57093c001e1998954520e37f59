@@ -1,0 +1,15 @@
+package com.nt.entity;
+
+import jakarta.persistence.Entity;
+import lombok.Data;
+
+@Entity
+@Table(name="Jpa_Doc_Info")
+@Data
+public class Doctor {
+	private int docId;
+	private String docName;
+	private String specialization;
+	private Double income;
+
+}

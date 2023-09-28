@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename Java project &apos;BootRestProj21-Restful-MiniProject&apos; to &apos;BootRestProj21-Restful-MiniProjectOld&apos;&#x0D;&#x0A;- Original element: &apos;BootRestProj21-Restful-MiniProject&apos;&#x0D;&#x0A;- Renamed element: &apos;BootRestProj21-Restful-MiniProject&apos;&#x0D;&#x0A;- Update references to refactored element" description="Rename Java project &apos;BootRestProj21-Restful-MiniProject&apos;" flags="7" id="org.eclipse.jdt.ui.rename.java.project" input="=BootRestProj21-Restful-MiniProject" name="BootRestProj21-Restful-MiniProjectOld" references="true" stamp="1692176004355" version="1.0"/>
+</session>

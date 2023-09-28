@@ -1,0 +1,17 @@
+package com.nt.service;
+
+import java.util.List;
+
+import com.nt.entity.Item;
+import com.nt.exception.ItemNotFoundException;
+
+
+
+public interface IItemMgmtService {
+	public String registerItem(Item item);
+	public List<Item> fetchAllItems();
+	public Item fetchItemById(Integer tid)throws ItemNotFoundException;
+	public String updateItemDetails(Item item)throws ItemNotFoundException;
+	public String updateItemDetailsById(int id)throws ItemNotFoundException;
+	public String removeItemById(int id)throws ItemNotFoundException;
+}

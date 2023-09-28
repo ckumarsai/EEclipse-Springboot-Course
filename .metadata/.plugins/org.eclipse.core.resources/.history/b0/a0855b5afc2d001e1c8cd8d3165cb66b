@@ -1,0 +1,5 @@
+select city,date("Date") as "Date",ppsf from tn_demo.ppsf_growth_by_city_csv 
+where state = '${state}' and
+city in (${city})
+and extract(year from date("Date")) between ${startYear} and ${endYear}
+order by date("Date");

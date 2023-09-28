@@ -1,0 +1,559 @@
+package ai.onx.realestate.controller;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
+
+import ai.onx.realestate.instrumentation.Instrument;
+import ai.onx.realestate.model.CityByStateReport;
+import ai.onx.realestate.model.CityPred;
+import ai.onx.realestate.model.CityPredReport;
+import ai.onx.realestate.model.CitySpecificModelReport;
+import ai.onx.realestate.model.ClusterReport;
+import ai.onx.realestate.model.DaysOnMarketByZipReport;
+import ai.onx.realestate.model.DaysOnMarketByZipReportInterval;
+import ai.onx.realestate.model.DaysOnMarketReport;
+import ai.onx.realestate.model.DaysOnMarketReportInterval;
+import ai.onx.realestate.model.EconomicIndicatorReport;
+import ai.onx.realestate.model.GeometryByZip;
+import ai.onx.realestate.model.HeatMapDataReport;
+import ai.onx.realestate.model.HomeSalesByZipReport;
+import ai.onx.realestate.model.HomeSalesByZipReportInterval;
+import ai.onx.realestate.model.HomeSalesReport;
+import ai.onx.realestate.model.HomeSalesReportInterval;
+import ai.onx.realestate.model.PPSFByZipReport;
+import ai.onx.realestate.model.PPSFByZipReportInterval;
+import ai.onx.realestate.model.PPSFReport;
+import ai.onx.realestate.model.PPSFReportInterval;
+import ai.onx.realestate.model.PopulationReport;
+import ai.onx.realestate.model.ZipPred;
+import ai.onx.realestate.model.ZipPredReport;
+import ai.onx.realestate.model.ZipcodeDaysOnMarketAbsoluteHighReport;
+import ai.onx.realestate.service.DemoDAO;
+import ai.onx.realestate.service.DemoService;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
+@CrossOrigin
+@RestController
+@Validated
+@RequestMapping("/realestate")
+//@SecurityRequirement(name = "bearerAuth")
+public class DemoController {
+
+	private Logger logger = LoggerFactory.getLogger(DemoController.class);
+
+	@Autowired
+	private DemoService demoService;
+
+	@Autowired
+	private DemoDAO demoDao;
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getPPSF", method = RequestMethod.GET)
+	public PPSFReport getPPSF( String state, String city,Integer startYear, Integer endYear,String flag ) throws Exception {
+		try {
+			PPSFReport o = demoService.getPPSF(state, city,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getHomeSales", method = RequestMethod.GET)
+	public HomeSalesReport gethomeSales(String state, String city,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			HomeSalesReport o = demoService.gethomeSales(state, city,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getDaysOnMarket", method = RequestMethod.GET)
+	public DaysOnMarketReport getDaysOnMarket(String state, String city,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			DaysOnMarketReport o = demoService.getDaysOnMarket(state, city,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getDaysOnMarketZipcode", method = RequestMethod.GET)
+	public DaysOnMarketByZipReport getDaysOnMarketZipcodeAbsoluteHigh( String state, String zipcode,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			DaysOnMarketByZipReport o = demoService.getDaysOnMarketZipcodeAbsoluteHigh(state, zipcode,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getHomeSalesZipcode", method = RequestMethod.GET)
+	public HomeSalesByZipReport getHomeSalesZipcode(String state, String zipcode,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			HomeSalesByZipReport o = demoService.getHomeSalesZipcode(state, zipcode,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getPPSFZipcode", method = RequestMethod.GET)
+	public PPSFByZipReport getPPSFZipcode(String state, String zipcode,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			PPSFByZipReport o = demoService.getPPSFZipcode(state, zipcode,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getCityByState", method = RequestMethod.GET)
+	public CityByStateReport getCityByState(String state) throws Exception {
+		try {
+			CityByStateReport o = demoService.getCityByState(state);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getCluster", method = RequestMethod.GET)
+	public ClusterReport getClusterData(String state) throws Exception {
+		try {
+			ClusterReport o = demoService.getClusterData(state);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getPopulation", method = RequestMethod.GET)
+	public PopulationReport getPopulationData(String state, String city,Integer startYear, Integer endYear) throws Exception {
+		try {
+			PopulationReport o = demoService.getPopulationData(state, city,startYear,endYear);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getCityPredictions", method = RequestMethod.GET)
+	public CityPredReport getCityPredictions(String state, String date, Integer limit) throws Exception {
+		try {
+			CityPredReport o = demoService.getCityPredictions(state, date, limit);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getZipCodePredictions", method = RequestMethod.GET)
+	public ZipPredReport getZipCodePredictions(String state, String city, String date, Integer limit) throws Exception {
+		try {
+			ZipPredReport o = demoService.getZipCodePredictions(state, city, date, limit);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getPPSFByInterval", method = RequestMethod.GET)
+	public PPSFReportInterval getPPSFInterval( String state, String city,Integer startYear, Integer endYear,String flag ) throws Exception {
+		try {
+			PPSFReportInterval o = demoService.getPPSFInterval(state, city,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getHomeSalesInterval", method = RequestMethod.GET)
+	public HomeSalesReportInterval gethomeSalesInterval(String state, String city,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			HomeSalesReportInterval o = demoService.gethomeSalesInterval(state, city,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getDaysOnMarketInterval", method = RequestMethod.GET)
+	public DaysOnMarketReportInterval getDaysOnMarketInterval(String state, String city,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			DaysOnMarketReportInterval o = demoService.getDaysOnMarketInterval(state, city,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getDaysOnMarketZipcodeInterval", method = RequestMethod.GET)
+	public DaysOnMarketByZipReportInterval getDaysOnMarketZipcodeInterval( String state, String zipcode,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			DaysOnMarketByZipReportInterval o = demoService.getDaysOnMarketZipcodeInterval(state, zipcode,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getHomeSalesZipcodeInterval", method = RequestMethod.GET)
+	public HomeSalesByZipReportInterval getHomeSalesZipcodeInterval(String state, String zipcode,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			HomeSalesByZipReportInterval o = demoService.getHomeSalesZipcodeInterval(state, zipcode,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getPPSFZipcodeInterval", method = RequestMethod.GET)
+	public PPSFByZipReportInterval getPPSFZipcodeInterval(String state, String zipcode,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			PPSFByZipReportInterval o = demoService.getPPSFZipcodeInterval(state, zipcode,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/geteconomicIndicator", method = RequestMethod.GET)
+	public EconomicIndicatorReport geteconomicIndicator( String state, String indicator,Integer startYear, Integer endYear,String indicatorType ) throws Exception {
+		try {
+			EconomicIndicatorReport o = demoService.geteconomicIndicator(state, indicator,startYear,endYear,indicatorType);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getCitySpecificModel", method = RequestMethod.GET)
+	public CitySpecificModelReport getCitySpecificModel() throws Exception {
+		try {
+			CitySpecificModelReport o = demoService.getCitySpecificModel();
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getPPSFCitySpecificZipcode", method = RequestMethod.GET)
+	public PPSFByZipReport getPPSFCitySpecificZipcode( String state, String zipcode,Integer startYear, Integer endYear,String flag ) throws Exception {
+		try {
+			PPSFByZipReport o = demoService.getPPSFCitySpecificZipcode(state, zipcode,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getPPSFCitySpecificNeighborhood", method = RequestMethod.GET)
+	public PPSFReport getPPSFCitySpecificNeighborhood( String state, String city,Integer startYear, Integer endYear,String flag ) throws Exception {
+		try {
+			PPSFReport o = demoService.getPPSFCitySpecificNeighborhood(state, city,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getHomeSalesCitySpecificNeighborhood", method = RequestMethod.GET)
+	public HomeSalesReport gethomeSalesCitySpecificNeighborhood(String state, String city,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			HomeSalesReport o = demoService.gethomeSalesCitySpecificNeighborhood(state, city,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getDaysOnMarketCitySpecificNeighborhood", method = RequestMethod.GET)
+	public DaysOnMarketReport getDaysOnMarketCitySpecificNeighborhood(String state, String city,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			DaysOnMarketReport o = demoService.getDaysOnMarketCitySpecificNeighborhood(state, city,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getDaysOnMarketCitySpecificZipcode", method = RequestMethod.GET)
+	public DaysOnMarketByZipReport getDaysOnMarketCitySpecificZipcode( String state, String zipcode,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			DaysOnMarketByZipReport o = demoService.getDaysOnMarketCitySpecificZipcode(state, zipcode,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getHomeSalesCitySpecificZipcode", method = RequestMethod.GET)
+	public HomeSalesByZipReport getHomeSalesCitySpecificZipcode(String state, String zipcode,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			HomeSalesByZipReport o = demoService.getHomeSalesCitySpecificZipcode(state, zipcode,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getPPSFCitySpecificNeighborhoodInterval", method = RequestMethod.GET)
+	public PPSFReportInterval getPPSFCitySpecificNeighborhoodInterval( String state, String city,Integer startYear, Integer endYear,String flag ) throws Exception {
+		try {
+			PPSFReportInterval o = demoService.getPPSFCitySpecificNeighborhoodInterval(state, city,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getHomeSalesCitySpecificNeighborhoodInterval", method = RequestMethod.GET)
+	public HomeSalesReportInterval getHomeSalesCitySpecificNeighborhoodInterval(String state, String city,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			HomeSalesReportInterval o = demoService.getHomeSalesCitySpecificNeighborhoodInterval(state, city,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getDaysOnMarketCitySpecificNeighborhoodInterval", method = RequestMethod.GET)
+	public DaysOnMarketReportInterval getDaysOnMarketCitySpecificNeighborhoodInterval(String state, String city,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			DaysOnMarketReportInterval o = demoService.getDaysOnMarketCitySpecificNeighborhoodInterval(state, city,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getDaysOnMarketCitySpecificZipcodeInterval", method = RequestMethod.GET)
+	public DaysOnMarketByZipReportInterval getDaysOnMarketCitySpecificZipcodeInterval( String state, String zipcode,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			DaysOnMarketByZipReportInterval o = demoService.getDaysOnMarketCitySpecificZipcodeInterval(state, zipcode,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getHomeSalesCitySpecificZipcodeInterval", method = RequestMethod.GET)
+	public HomeSalesByZipReportInterval getHomeSalesCitySpecificZipcodeInterval(String state, String zipcode,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			HomeSalesByZipReportInterval o = demoService.getHomeSalesCitySpecificZipcodeInterval(state, zipcode,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getPPSFCitySpecificZipcodeInterval", method = RequestMethod.GET)
+	public PPSFByZipReportInterval getPPSFCitySpecificZipcodeInterval(String state, String zipcode,Integer startYear, Integer endYear,String flag) throws Exception {
+		try {
+			PPSFByZipReportInterval o = demoService.getPPSFCitySpecificZipcodeInterval(state, zipcode,startYear,endYear,flag);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getCitySpecificPredictions", method = RequestMethod.GET)
+	public CityPredReport getCitySpecificPredictions(String state, String date, Integer limit) throws Exception {
+		try {
+			CityPredReport o = demoService.getCitySpecificPredictions(state, date, limit);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getZipCodeSpecificPredictions", method = RequestMethod.GET)
+	public ZipPredReport getZipCodeSpecificPredictions(String state, String city, String date, Integer limit) throws Exception {
+		try {
+			ZipPredReport o = demoService.getZipCodeSpecificPredictions(state, city, date, limit);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/heatMapData", method = RequestMethod.GET)
+	public HeatMapDataReport getHeatMapData(String state) throws Exception {
+		try {
+			HeatMapDataReport o = demoService.getHeatMapData(state);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getAllZipcodes", method = RequestMethod.GET)
+	public List<String> getAllZipcodes() throws Exception {
+		try {
+			List<String> o = demoService.getAllZipcodes();
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getGeometryByZip", method = RequestMethod.GET)
+	public List<GeometryByZip> getGeometryByZip(String zipcode) throws Exception {
+		try {
+			List<GeometryByZip> o = demoService.getGeometryByZip(zipcode);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/downloadCityPrediction", method = RequestMethod.GET)
+    public void downloadCityPrediction(HttpServletResponse response,String state, String date) throws IOException {
+        response.setContentType("text/csv");
+        
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=city_pred_" + state + "_" + date + ".csv";
+        response.setHeader(headerKey, headerValue);
+        Integer limit = null;
+        List<CityPred> listUsers = null;
+		try {
+			listUsers = demoDao.getCityPredictions(state,date,limit);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+ 
+        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
+        String[] csvHeader = {"city", "ppsf", "ppsfLow", "ppsfHigh", "ppsfMeanGrowth","ppsfLowGrowth","ppsfHighGrowth","domMean",
+        		"domLow","domHigh","homeSalesMean","homeSalesLow","homeSalesHigh","population_2021","Population_Growth_1_year","population_growth_3_year",
+        		"population_growth_5_year","home_sales_cumulative_low","home_sales_cumulative_mean","home_sales_cumulative_high"};
+        String[] nameMapping = {"city", "ppsf", "ppsfLow", "ppsfHigh", "ppsfMeanGrowth","ppsfLowGrowth","ppsfHighGrowth","domMean",
+        		"domLow","domHigh","homeSalesMean","homeSalesLow","homeSalesHigh","population_2021","Population_Growth_1_year","population_growth_3_year",
+        		"population_growth_5_year","home_sales_cumulative_low","home_sales_cumulative_mean","home_sales_cumulative_high"};
+         
+        csvWriter.writeHeader(csvHeader);
+         
+        for (CityPred user : listUsers) {
+            csvWriter.write(user, nameMapping);
+        }
+         
+        csvWriter.close();
+         
+    }
+	
+	@RequestMapping(value = "v1/downloadZipcodePrediction", method = RequestMethod.GET)
+    public void downloadZipcodePrediction(HttpServletResponse response,String state, String city, String date) throws IOException {
+        response.setContentType("text/csv");
+     
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=city_pred_" + city + "_" + date + ".csv";
+        response.setHeader(headerKey, headerValue);
+        Integer limit = null;
+        List<ZipPred> listUsers = null;
+		try {
+			listUsers = demoDao.getZipCodePredictions(state,city, date, limit);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+ 
+        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
+        String[] csvHeader = {"zipCode", "ppsf", "ppsfLow", "ppsfHigh", "ppsfMeanGrowth","ppsfLowGrowth","ppsfHighGrowth","domMean",
+        		"domLow","domHigh","homeSalesMean","homeSalesLow","homeSalesHigh","home_sales_cumulative_low","home_sales_cumulative_mean","home_sales_cumulative_high"};
+        String[] nameMapping = {"zipCode", "ppsf", "ppsfLow", "ppsfHigh", "ppsfMeanGrowth","ppsfLowGrowth","ppsfHighGrowth","domMean",
+        		"domLow","domHigh","homeSalesMean","homeSalesLow","homeSalesHigh","home_sales_cumulative_low","home_sales_cumulative_mean","home_sales_cumulative_high"};
+         
+        csvWriter.writeHeader(csvHeader);
+         
+        for (ZipPred user : listUsers) {
+            csvWriter.write(user, nameMapping);
+        }
+        csvWriter.close();
+         
+    }
+	@CrossOrigin
+	@Instrument
+	@RequestMapping(value = "v1/getZipCodePredictionsSummary", method = RequestMethod.GET)
+	public ZipPredReport getZipCodePredictionsSummary(String state, String date, Integer limit) throws Exception {
+		try {
+			ZipPredReport o = demoService.getZipCodePredictionsSummary(state, date, limit);
+			return o;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+}
+
+
+
+

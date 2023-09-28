@@ -1,0 +1,5 @@
+package com.example.ItemCrud.Model;
+
+public class Item {
+
+}
